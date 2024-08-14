@@ -1,6 +1,7 @@
 const dropdowns = document.querySelectorAll(".dropdown-container"),
   inputLanguageDropdown = document.querySelector("#input-language"),
   outputLanguageDropdown = document.querySelector("#output-language");
+  outputLanguageDropdowntwo = document.querySelector("#output-languagetwo");
 
 function populateDropdown(dropdown, options) {
   dropdown.querySelector("ul").innerHTML = "";
@@ -16,6 +17,7 @@ function populateDropdown(dropdown, options) {
 
 populateDropdown(inputLanguageDropdown, languages);
 populateDropdown(outputLanguageDropdown, languages);
+populateDropdown(outputLanguageDropdowntwo, languages);
 
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (e) => {
@@ -49,6 +51,7 @@ const swapBtn = document.querySelector(".swap-position"),
   outputLanguage = outputLanguageDropdown.querySelector(".selected"),
   inputTextElem = document.querySelector("#input-text"),
   outputTextElem = document.querySelector("#output-text");
+  outputTextElemTwo = document.querySelector("#output-texttwo");
 
 swapBtn.addEventListener("click", (e) => {
   const temp = inputLanguage.innerHTML;
@@ -65,6 +68,7 @@ swapBtn.addEventListener("click", (e) => {
   outputTextElem.value = tempInputText;
 
   translate();
+  //translatetwo();
 });
 
 function translate() {
@@ -81,11 +85,53 @@ function translate() {
     .then((json) => {
       console.log(json);
       outputTextElem.value = json[0].map((item) => item[0]).join("");
+
+      const outputLanguagetwo =
+      outputLanguageDropdowntwo.querySelector(".selected").dataset.value;
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLanguage}&tl=${outputLanguagetwo}&dt=t&q=                      	${encodeURI(
+    	inputText,
+  	)}`;
+        fetch(url)
+    .then((response) => response.json())
+    .then((json) => {
+      console.log(json);
+      //outputTextElem.value = json[0].map((item) => item[0]).join("");
+      outputTextElemTwo.value = json[0].map((item) => item[0]).join("");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+     
     })
     .catch((error) => {
       console.log(error);
     });
 }
+
+
+function translatetwo() {
+  const inputText = inputTextElem.value;
+  const inputLanguage =
+    inputLanguageDropdown.querySelector(".selected").dataset.value;
+  const outputLanguagetwo =
+    outputLanguageDropdowntwo.querySelector(".selected").dataset.value;
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLanguage}&tl=${outputLanguagetwo}&dt=t&q=${encodeURI(
+    inputText,
+  )}`;
+  fetch(url)
+    .then((response) => response.json())
+    .then((json) => {
+      console.log(json);
+      //outputTextElem.value = json[0].map((item) => item[0]).join("");
+      outputTextElemTwo.value = json[0].map((item) => item[0]).join("");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+
+
 inputTextElem.addEventListener("input", (e) => {
   //limit input to 5000 characters
   if (inputTextElem.value.length > 5000) {
